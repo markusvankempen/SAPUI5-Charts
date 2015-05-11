@@ -1,0 +1,110 @@
+<html>
+<!-- by Markus van Kempen - mvk@ca.ibm.com - Twitter: @MarkusVankempen -->
+<!-- https://markusvankempen.wordpress.com/ -->
+<!-- Date/Version: 2015-05-05 -->
+<!-- Filters -->
+<head>
+<meta name="description" content="Chart with Filters Values" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Chart with Aggregated Values</title>
+    <link rel="stylesheet" type="text/css" href="">
+
+    <script id="sap-ui-bootstrap" src="https://sapui5.netweaver.ondemand.com/resources/sap-ui-core.js" type="text/javascript" data-sap-ui-libs="sap.ui.core,sap.viz,sap.ui.commons,sap.ui.table"
+ data-sap-ui-theme="sap_goldreflection">
+    </script>
+    <script>
+//////////////////
+//
+//<d:GENERATED_ID m:type="Edm.String">37259512631033501</d:GENERATED_ID>
+//<d:OPPORTUNITY_OWNER m:type="Edm.String">Jim Jones</d:OPPORTUNITY_OWNER>
+//<d:OPPORTUNITY_QUANTITY m:type="Edm.Double">23</d:OPPORTUNITY_QUANTITY>
+//<d:OPPORTUNITY_VALUE m:type="Edm.Double">79500</d:OPPORTUNITY_VALUE>
+//<d:Opportunity_CNT m:type="Edm.Double">7</d:Opportunity_CNT>
+    	var sURI2 = '/sapphire/opportunityforecast.xsodata';
+    var oModel2 = new sap.ui.model.odata.ODataModel(sURI2, true);
+   
+	var sURI = '/sapphire/opportunityforecast.xsodata';
+	var oModel = new sap.ui.model.odata.ODataModel(sURI, true);
+
+var oFilterQ1=new sap.ui.model.Filter('CLOSE_QUARTER',sap.ui.model.FilterOperator.EQ,'Q1');
+     var oFilterWon=new sap.ui.model.Filter('OPPORTUNITY_ACTIONS',sap.ui.model.FilterOperator.EQ,'Won');
+ var oFilterActual=new sap.ui.model.Filter('VERSION',sap.ui.model.FilterOperator.EQ,'ACTUAL');
+
+	var oDataset = new sap.viz.ui5.data.FlattenedDataset({
+        dimensions: [{
+            axis: 1,
+            name: 'REGION',
+            value: '{REGION}'
+        }],
+        measures: [{
+            name: 'VALUE',
+            value: "{OPPORTUNITY_AMOUNT}"
+        }],
+        data: {
+         path: "/Opportunities",
+filters: new sap.ui.model.Filter('VERSION',sap.ui.model.FilterOperator.EQ,'ACTUAL'),
+// [oFilterActual,oFilterQ1]
+ sorter : new sap.ui.model.Sorter("REGION",true)  
+//         parameters: {select: 'CUSTOMER_ID,REGION,CUSTOMER_DESC,OPPORTUNITY_AMOUNT'}
+        }
+    });
+      
+      
+    oChart = new sap.viz.ui5.Bar({
+		width : "100%",
+	    height : "50%",
+	    title: {
+            visible: true,
+            text: 'Sales by Region (NOT Aggregated)'
+        },
+		dataset: oDataset
+	});
+    oChart.setModel(oModel)  
+	oChart.placeAt("content") 
+      
+var oDataset = new sap.viz.ui5.data.FlattenedDataset({
+        dimensions: [{
+            axis: 1,
+            name: 'REGION',
+            value: '{REGION}'
+        }],
+        measures: [{
+            name: 'VALUE',
+            value: "{OPPORTUNITY_AMOUNT}"
+        }],
+        data: {
+         path: "/Opportunities",
+         parameters: {select: 'CUSTOMER_ID,REGION,CUSTOMER_DESC,OPPORTUNITY_AMOUNT'}
+        }
+    });
+      
+      
+    oChart = new sap.viz.ui5.Bar({
+		width : "100%",
+	    height : "50%",
+	    title: {
+            visible: true,
+            text: 'Sales by Region (Aggregated)'
+        },
+		dataset: oDataset
+	});
+    oChart.setModel(oModel2)  
+	oChart.placeAt("mystack") 
+      
+</script>
+
+</head>
+
+<body class="sapUiBody" role="application">
+
+    <div id="mycol2"></div><br>
+    <div id="content"></div><br>
+    <div id="mystack"></div>
+    <div id="mycol"></div><br>
+
+  <div id="mybubble"></div>
+    <div id="mytab"></div><br>
+</body>
+
+</html>

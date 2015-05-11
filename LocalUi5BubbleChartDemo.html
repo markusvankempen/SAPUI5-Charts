@@ -1,0 +1,104 @@
+<html>
+<!-- by Markus van Kempen - mvk@ca.ibm.com - Twitter: @MarkusVankempen -->
+<!-- https://markusvankempen.wordpress.com/ -->
+<!-- Date/Version: 2015-05-05 -->
+<!-- Aggregated-->
+<head>
+<meta name="description" content="Char with Aggregated Values" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Char with Aggregated Values</title>
+    <link rel="stylesheet" type="text/css" href="">
+
+    <script id="sap-ui-bootstrap" src="https://sapui5.netweaver.ondemand.com/resources/sap-ui-core.js" type="text/javascript" data-sap-ui-libs="sap.ui.core,sap.viz,sap.ui.commons,sap.ui.table"
+ data-sap-ui-theme="sap_goldreflection">
+    </script>
+    <script>
+//////////////////
+//
+//<d:GENERATED_ID m:type="Edm.String">37259512631033501</d:GENERATED_ID>
+//<d:OPPORTUNITY_OWNER m:type="Edm.String">Jim Jones</d:OPPORTUNITY_OWNER>
+//<d:OPPORTUNITY_QUANTITY m:type="Edm.Double">23</d:OPPORTUNITY_QUANTITY>
+//<d:OPPORTUNITY_VALUE m:type="Edm.Double">79500</d:OPPORTUNITY_VALUE>
+//<d:Opportunity_CNT m:type="Edm.Double">7</d:Opportunity_CNT>
+	var sURI2 = 'opportunityforecast.xsodataOpportunities.json';
+    var oModel2 = new  sap.ui.model.json.JSONModel(sURI2);
+   
+	var sURI = 'opportunityforecast.xsodataOpportunities.json';
+	var oModel = new sap.ui.model.json.JSONModel(sURI);
+
+
+	var oDataset = new sap.viz.ui5.data.FlattenedDataset({
+        dimensions: [{
+            axis: 1,
+            name: 'REGION',
+            value: '{REGION}'
+        }],
+        measures: [{
+            name: 'VALUE',
+            value: "{OPPORTUNITY_AMOUNT}"
+        }],
+        data: {
+         path: "/d/results"
+//,         parameters: {select: 'CUSTOMER_ID,REGION,CUSTOMER_DESC,OPPORTUNITY_AMOUNT'}
+        }
+    });
+      
+      
+    oChart = new sap.viz.ui5.Bar({
+		width : "100%",
+	    height : "50%",
+	    title: {
+            visible: true,
+            text: 'Sales by Region (NOT Aggregated)'
+        },
+		dataset: oDataset
+	});
+    oChart.setModel(oModel)  
+	oChart.placeAt("content") 
+      
+var oDataset = new sap.viz.ui5.data.FlattenedDataset({
+        dimensions: [{
+            axis: 1,
+            name: 'REGION',
+            value: '{REGION}'
+        }],
+        measures: [{
+            name: 'VALUE',
+            value: "{OPPORTUNITY_AMOUNT}"
+        }],
+        data: {
+         path: "/d/results",
+         parameters: {select: 'CUSTOMER_ID,REGION,CUSTOMER_DESC,OPPORTUNITY_AMOUNT'}
+        }
+    });
+      
+      
+    oChart = new sap.viz.ui5.Bar({
+		width : "100%",
+	    height : "50%",
+	    title: {
+            visible: true,
+            text: 'Sales by Region (Aggregated)'
+        },
+		dataset: oDataset
+	});
+    oChart.setModel(oModel2)  
+	oChart.placeAt("mystack") 
+      
+</script>
+
+</head>
+
+<body class="sapUiBody" role="application">
+
+    <div id="mycol2"></div><br>
+    <div id="content"></div><br>
+    <div id="mystack"></div>
+    <div id="mycol"></div><br>
+
+  <div id="mybubble"></div>
+    <div id="mytab"></div><br>
+</body>
+
+</html>

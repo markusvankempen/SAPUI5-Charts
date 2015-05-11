@@ -1,0 +1,473 @@
+<html>
+<!-- by Markus van Kempen - mvk@ca.ibm.com - Twitter: @MarkusVankempen -->
+<!-- https://markusvankempen.wordpress.com/ -->
+<!-- Date/Version: 2015-05-05 -->
+<!-- odata service example -->
+<head>
+<meta name="description" content="Viz Pie Chart with OData" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Pie Char with OData service</title>
+    <link rel="stylesheet" type="text/css" href="">
+
+    <script id="sap-ui-bootstrap" src="https://sapui5.netweaver.ondemand.com/resources/sap-ui-core.js" type="text/javascript" data-sap-ui-libs="sap.ui.core,sap.viz,sap.ui.commons,sap.ui.table"
+ data-sap-ui-theme="sap_goldreflection">
+    </script>
+    <script>
+//////////////////
+//
+//<d:GENERATED_ID m:type="Edm.String">37259512631033501</d:GENERATED_ID>
+//<d:OPPORTUNITY_OWNER m:type="Edm.String">Jim Jones</d:OPPORTUNITY_OWNER>
+//<d:OPPORTUNITY_QUANTITY m:type="Edm.Double">23</d:OPPORTUNITY_QUANTITY>
+//<d:OPPORTUNITY_VALUE m:type="Edm.Double">79500</d:OPPORTUNITY_VALUE>
+//<d:Opportunity_CNT m:type="Edm.Double">7</d:Opportunity_CNT>
+   
+	var sURI = '/sapphire/opportunitiesCA.xsodata/';
+	var oModel = new sap.ui.model.odata.ODataModel(sURI, true);
+var oFilterQ1=new sap.ui.model.Filter('CLOSE_QUARTER',sap.ui.model.FilterOperator.EQ,'Q1');
+     var oFilterWon=new sap.ui.model.Filter('OPPORTUNITY_ACTIONS',sap.ui.model.FilterOperator.EQ,'Won');
+
+
+	var oDataset = new sap.viz.ui5.data.FlattenedDataset({
+        dimensions: [{
+            axis: 1,
+            name: 'CUSTOMER_DESC',
+            value: '{CUSTOMER_DESC}'
+        }
+
+],
+        measures: [{
+            name: 'VALUE',
+            value: "{OPPORTUNITY_AMOUNT}"
+        }],
+        data: {
+         path: "/Opportunities",
+         parameters: {select: 'CUSTOMER_ID,CUSTOMER_DESC,OPPORTUNITY_AMOUNT'}
+        }
+    });
+      
+      
+    oChart = new sap.viz.ui5.Pie({
+		width : "100%",
+	    height : "100%",
+	    title: {
+            visible: true,
+            text: 'Total Products By Category'
+        },
+		dataset: oDataset
+	});
+    oChart.setModel(oModel)  
+	oChart.placeAt("content") 
+      
+//bubble
+         var obdataset = new sap.viz.ui5.data.FlattenedDataset({
+
+              dimensions : [ {
+                axis : 1,
+                name : 'REGION',
+                value : "{REGION}"
+              } ],
+
+              measures : [ {
+                group : 1,
+                name : 'QUANTITY',
+                value : '{OPPORTUNITY_QUANTITY}'
+              }, {
+                group : 2,
+                name : 'Profit',
+                value : '{OPPORTUNITY_AMOUNT}'
+              }, {
+                group : 3,
+                name : 'Revenue',
+                value : '{Potential_Amount}'
+              } ],
+
+              data : {
+         path: "/Opportunities",
+         parameters: {select: 'CUSTOMER_ID,CUSTOMER_DESC,OPPORTUNITY_AMOUNT,REGION,Potential_Amount,OPPORTUNITY_QUANTITY'}
+                
+              }
+
+            }); 
+      
+    var bubble = new sap.viz.ui5.Bubble({
+              id : "bubble",
+              width : "80%",
+              height : "400px",
+              plotArea : {
+              },
+              title : {
+                visible : true,
+                text : 'Profit and Revenue By Country'
+              },
+              dataset : obdataset
+            });
+    bubble.setModel(oModel);  
+    bubble.placeAt("mybubble"); 
+//col
+
+          var ocoldataset = new sap.viz.ui5.data.FlattenedDataset({
+
+              dimensions : [ {
+                axis : 1,
+                name : 'REGION',
+                value : "{REGION}"
+              } ],
+
+              measures : [ {
+ 
+                name : 'Revenue',
+                value : '{Potential_Amount}'
+              } ],
+
+              data : {
+         path: "/Opportunities",
+         parameters: {select: 'CUSTOMER_ID,CUSTOMER_DESC,OPPORTUNITY_AMOUNT,REGION,Potential_Amount,OPPORTUNITY_QUANTITY,CLOSE_QUARTER'}
+                
+              }
+
+            }); 
+      
+    var mycol= new sap.viz.ui5.Column({
+              id : "column",
+              width : "80%",
+              height : "400px",
+              plotArea : {
+              },
+              title : {
+                visible : true,
+                text : 'Q / Profit by Reagions'
+              },
+              dataset : ocoldataset
+            });
+    mycol.setModel(oModel);  
+    mycol.placeAt("mycol"); 
+
+//////////////////////////////////
+
+//StackedColumn
+            var oFilter=new sap.ui.model.Filter('OPPORTUNITY_ACTIONS',sap.ui.model.FilterOperator.EQ,'Won');
+
+var ostackdataset = new sap.viz.ui5.data.FlattenedDataset({
+        dimensions: [{
+            axis: 2,
+            name: 'Owner',
+            value: '{OPPORTUNITY_OWNER}'
+        },
+
+{
+            axis: 1,
+            name: 'REGION',
+            value: '{REGION}'
+        }
+
+],
+        measures: [{
+            name: 'VALUE',
+            value: "{OPPORTUNITY_AMOUNT}"
+        }],
+        data: {
+         path: "/Opportunities",
+filters: [oFilter],
+         parameters: {select: 'CUSTOMER_ID,CUSTOMER_DESC,OPPORTUNITY_AMOUNT,REGION,CLOSE_QUARTER,OPPORTUNITY_ACTIONS,OPPORTUNITY_OWNER'}
+        }
+    });
+        
+    var mystack= new sap.viz.ui5.StackedColumn({
+              id : "mystck",
+              width : "80%",
+              height : "400px",
+              plotArea : {
+              },
+              title : {
+                visible : true,
+                text : ' by OPPORTUNITY_AMOUNT / won'
+              },
+              dataset : ostackdataset 
+            });
+    mystack.setModel(oModel);  
+    mystack.placeAt("mystack"); 
+
+///////////////////////////////////////////////////////////////
+
+//col url3
+     var oFilter3=new sap.ui.model.Filter('OPPORTUNITY_ACTIONS',sap.ui.model.FilterOperator.EQ,'Won');
+
+          var ocoldataset3 = new sap.viz.ui5.data.FlattenedDataset({
+
+              dimensions : [ {
+                axis : 1,
+                name : 'Owner',
+                value : "{OPPORTUNITY_OWNER}"
+              } ],
+
+              measures : [ {
+ 
+                name : 'Op Value',
+                value : '{OPPORTUNITY_VALUE}'
+              }  , {
+ 
+                name : 'Op AMOUNT',
+                value : '{OPPORTUNITY_AMOUNT}'
+              }   ],
+
+              data : {
+         path: "/Opportunities",
+//filters: [oFilter3],
+   parameters: {select:'OPPORTUNITY_ACTIONS,OPPORTUNITY_OWNER,CUSTOMER_DESC,OPPORTUNITY_VALUE,OPPORTUNITY_AMOUNT,REGION,Potential_Amount,OPPORTUNITY_QUANTITY'}
+                          }
+
+            }); 
+      
+    var mycol3= new sap.viz.ui5.Column({
+              id : "column3",
+              width : "80%",
+              height : "400px",
+              plotArea : {
+              },
+              title : {
+                visible : true,
+                text : 'by OPPORTUNITY MVK WON '
+              },
+              dataset : ocoldataset3
+            });
+    mycol3.setModel(oModel);  
+    mycol3.placeAt("mycol3"); 
+
+   
+///////////////////////////////////////////////////////////////
+//tree
+            var treeDataset = new sap.viz.ui5.data.FlattenedDataset({
+              dimensions : [ 
+{axis : 1,
+                name : 'OPPORTUNITY_VALUE',
+                value : '{OPPORTUNITY_VALUE}'
+              },
+{axis : 1,
+                name : 'OPPORTUNITY_ACTIONS',
+                value : '{OPPORTUNITY_ACTIONS}'
+              },{
+                axis : 1,
+                name : 'REGION',
+                value : "{REGION}"
+              },{
+                axis : 1,
+                name : 'OPPORTUNITY_OWNER',
+                value : "{OPPORTUNITY_OWNER}"
+              } ,{
+                axis : 1,
+                name : 'CUSTOMER_DESC',
+                value : "{CUSTOMER_DESC}"
+              }  ],
+
+              measures : [ {
+                group : 1,
+                name : 'OPPORTUNITY_VALUE',
+                value : '{OPPORTUNITY_VALUE}'
+              }],
+
+              data : {
+                path : "/Opportunities",
+             filters: [oFilterQ1,oFilterWon]
+              }
+            });
+            
+            var vbar = new sap.viz.ui5.Treemap({
+              id : "treemap",
+              width : "80%",
+              height : "400px",
+              plotArea : {
+                "endColor":"#3300c0", 
+                "startColor":"#a9f0ff"
+              },
+              title : {
+                visible : true,
+                text : 'Profit By Country & Population'
+              },
+              dataset : treeDataset
+            });
+            vbar.setModel(oModel);
+           vbar.placeAt("mytree"); 
+
+//////////////////
+
+     
+
+          var ocoldataset2 = new sap.viz.ui5.data.FlattenedDataset({
+
+              dimensions : [ {
+                axis : 1,
+                name : 'Owner',
+                value : "{OPPORTUNITY_OWNER}"
+              } ],
+
+              measures : [ {
+ 
+                name : 'Op Value',
+                value : '{OPPORTUNITY_VALUE}'
+              } ],
+
+              data : {
+         path: "/Opportunities",
+
+         parameters: {select: 'OPPORTUNITY_OWNER,OPPORTUNITY_QUANTITY,OPPORTUNITY_VALUE'}
+
+              }
+
+            }); 
+      
+    var mycol2= new sap.viz.ui5.Column({
+              id : "column2",
+              width : "80%",
+              height : "400px",
+              plotArea : {
+              },
+              title : {
+                visible : true,
+                text : 'by OPPORTUNITY owner Won'
+              },
+              dataset : ocoldataset2
+            });
+    mycol2.setModel(oModel2);  
+//    mycol2.placeAt("mycol2"); 
+
+///////////////////////////////////////////////////////////////
+
+
+
+		// create the DataTable control
+		var oTable = new sap.ui.table.Table({editable:true});
+		
+		// define the Table columns
+		var oControl = new sap.ui.commons.TextView({text:"{CUSTOMER_DESC}"}); // short binding notation
+		oTable.addColumn(new sap.ui.table.Column({label: new sap.ui.commons.Label({text: "Last Name"}), template: oControl, sortProperty: "lastName", filterProperty: "lastName", width: "100px"}));
+
+
+		oControl = new sap.ui.commons.TextField().bindProperty("value", "CUSTOMER_ID"); // more verbose binding notationt
+
+		oTable.addColumn(new sap.ui.table.Column({label: new sap.ui.commons.Label({text: "First Name"}), template: oControl, sortProperty: "CUSTOMER_ID", filterProperty: "name", width: "80px"}));
+
+
+		oControl = new sap.ui.commons.CheckBox({checked:"{checked}"});
+		oTable.addColumn(new sap.ui.table.Column({label: new sap.ui.commons.Label({text: "Checked"}), template: oControl, sortProperty: "checked", filterProperty: "checked", width: "75px", hAlign: "Center"}));
+		oControl = new sap.ui.commons.Link({text:"{linkText}", href:"{href}"});
+		oTable.addColumn(new sap.ui.table.Column({label: new sap.ui.commons.Label({text: "Web Site"}), template: oControl, sortProperty: "linkText", filterProperty: "linkText"}));
+		oControl = new sap.ui.commons.RatingIndicator({value:"{rating}"});
+		oTable.addColumn(new sap.ui.table.Column({label: new sap.ui.commons.Label({text: "Rating"}), template: oControl, sortProperty: "rating", filterProperty: "rating"}));
+		
+		
+		// create some local data
+		var aData = [
+			{lastName: "Dente", name: "Al", checked: true, linkText: "www.sap.com", href: "http://www.sap.com", rating: 4},
+			{lastName: "Friese", name: "Andy", checked: true, linkText: "https://experience.sap.com/fiori", href: "https://experience.sap.com/fiori", rating: 2},
+			{lastName: "Mann", name: "Anita", checked: false, linkText: "http://www.saphana.com/", href: "http://www.saphana.com/", rating: 3}
+		];
+		
+		// create a JSONModel, fill in the data and bind the Table to this model
+		//var oModel = new sap.ui.model.json.JSONModel();
+
+	var sURI = 'http://sonhana2.icc-51.usca.ibm.com:8002/sapphire/opportunitiesCA.xsodata/';
+	var oModel = new sap.ui.model.odata.ODataModel(sURI, true);
+
+		//oModel.setData({modelData: aData});
+		oTable.setModel(oModel);
+    oTable.setModel(oModel).bindRows({
+        path: "/Opportunities",
+         parameters: {select: 'CUSTOMER_ID,CUSTOMER_DESC,OPPORTUNITY_AMOUNT,REGION,Potential_Amount,OPPORTUNITY_QUANTITY,CLOSE_QUARTER'}
+                
+    });
+         oTable.placeAt("mytab");
+///// TABLE
+        // Layout  
+        var oLayout = new sap.ui.commons.layout.MatrixLayout("layout", {  
+            width : "100%",  
+//            widths : [ "100%" ],
+      columns : 2
+        });  
+        // Temperature Values Table  
+        var oTable = new sap.ui.table.Table("table", {  
+            width : "100%",  
+            visibleRowCount : 4,  
+            visibleRowCountMode : sap.ui.table.VisibleRowCountMode.Auto,  
+            noData : new sap.ui.commons.TextView({  
+                text : "No temp data available."  
+            }),  
+            columns : [ {  
+                label : "CUSTOMER_ID",  
+                template : "CUSTOMER_ID",  
+                sortProperty : "CUSTOMER_ID"  
+            }, {  
+                label : "CUSTOMER_DESC",  
+                template : "CUSTOMER_DESC",  
+                sortProperty : "unit"  
+            }, {  
+                label : "Potential_Amount",  
+                template : "Potential_Amount",  
+                sortProperty : "storedAt"  
+            }, {  
+                label : "OPPORTUNITY_OWNER",  
+                template : "OPPORTUNITY_OWNER",  
+                sortProperty : "OPPORTUNITY_OWNER"  
+            }, {  
+                label : "OPPORTUNITY_ACTIONS",  
+                template : "OPPORTUNITY_ACTIONS",  
+                sortProperty : "OPPORTUNITY_ACTIONS"  
+            } ],  
+            rows : {  
+                path : "/Opportunities",  
+                sorter : new sap.ui.model.Sorter("CUSTOMER_ID")  
+            }  
+        });  
+    oTable.setModel(oModel);  
+var oCell = new sap.ui.commons.layout.MatrixLayoutCell({
+	id : 'Cell-0-0',
+	colSpan : 2 });
+oCell.addContent(oTable);
+              
+        oLayout.createRow(oCell);  
+        // Chart  
+        var oChartData = new sap.viz.ui5.data.FlattenedDataset({  
+            dimensions : [ {  
+                axis : 1, // must be one for the x-axis  
+                name : 'CUSTOMER_DESC',  
+                value : "{CUSTOMER_DESC}"  
+            } ],  
+            measures : [ {  
+                name : 'Potential_Amount',  
+                value : '{Potential_Amount}'  
+            } ],  
+            data : {  
+                path : "/Opportunities"  
+            }  
+        });  
+        var oChart2 = new sap.viz.ui5.Line("chart", {  
+            width : "100%",  
+            dataset : oChartData  
+        });  
+    oChart2 .setModel(oModel); 
+        oLayout.createRow(oChart2,mycol2);  
+
+  //      oLayout.createRow(new sap.ui.commons.layout.MatrixLayoutCell().addContent(mycol2));  
+
+         oLayout.placeAt("mytab2");
+
+
+</script>
+
+</head>
+
+<body class="sapUiBody" role="application">
+    <div id="mytab2"></div><br>
+    <div id="mytree"></div><br>
+    <div id="mybar3"></div><br>
+    <div id="mycol3"></div><br>
+    <div id="mycol2"></div><br>
+
+    <div id="mystack"></div>
+    <div id="mycol"></div><br>
+    <div id="content"></div><br>
+  <div id="mybubble"></div>
+    <div id="mytab"></div><br>
+</body>
+
+</html>

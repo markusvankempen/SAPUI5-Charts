@@ -1,0 +1,90 @@
+<html>
+<!-- by Markus van Kempen - mvk@ca.ibm.com - Twitter: @MarkusVankempen -->
+<!-- https://markusvankempen.wordpress.com/ -->
+<!-- Date/Version: 2015-05-05 -->
+<!-- ODATA Model -->
+<head>
+<style>
+.myPanel {
+  
+}
+</style>  
+  
+<meta name="description" content="Makit Pie Chart Test using json - mvk@ca.ibm.com" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Makit Pie Chart with OData service</title>
+    <link rel="stylesheet" type="text/css" href="">
+
+    <script id="sap-ui-bootstrap" src="https://sapui5.netweaver.ondemand.com/resources/sap-ui-core.js" type="text/javascript" data-sap-ui-libs="sap.ui.core,sap.viz,sap.ui.commons,sap.ui.table,sap.makit"
+ data-sap-ui-theme="sap_goldreflection">
+    </script>
+
+
+<script>
+
+	var sURIJson = 'opportunityforecast.xsodataOpportunities.json';
+	var oModelJson = new sap.ui.model.json.JSONModel(sURIJson);
+
+	    	var redPalette = [ 0xF7A6AF, 0xF05662, 0xC03C53, 0x84082C ];
+
+     	// Pie Chart
+	var oChart2 = new sap.makit.Chart({
+		width : "100%",
+		height: "80%",
+		type : sap.makit.ChartType.Pie,
+		legendPosition : sap.makit.LegendPosition.Top,
+		valueAxis: new sap.makit.ValueAxis({}),
+		categoryAxis: new sap.makit.CategoryAxis({}),
+		category : new sap.makit.Category({
+			column : "region",
+		}),
+		values : [new sap.makit.Value({
+			expression : "value",
+			format : "number",
+		})],
+	});
+	oChart2.addColumn(new sap.makit.Column({name:"region", value:"{REGION}"}));
+	oChart2.addColumn(new sap.makit.Column({name:"value", value:"{OPPORTUNITY_AMOUNT}"}));
+	oChart2.setModel(oModelJson);
+	oChart2.bindRows({
+//         path: "/Opportunities", // Note:  xsodata nativ binding ,
+         path: "/d/results", // Note: Json xsodata binding for the same service
+        });
+   // oChart2.placeAt("content");
+	
+
+;  
+  
+  var oPanel2 = new sap.ui.commons.Panel({width: "500px", height: "500px"});
+//Add something to the panel's content area
+oPanel2.addContent(oChart2);
+
+  
+var oLayoutH = new sap.ui.layout.HorizontalLayout("LayoutH", {
+			content:[
+				 oPanel2	
+					]});  
+  
+var oLayoutV = new sap.ui.layout.VerticalLayout("Layout1V", {
+	content: [oLayoutH]
+});  
+  
+  
+// attach it to some element in the page
+oLayoutV.placeAt("sample");
+  
+  
+  
+</script>	
+
+</head>
+Hello
+<body class="sapUiBody" role="application">
+
+    <div id="oChart"></div><br>
+	    <div id="content"></div><br>
+  <div id="sample"></div>
+</body>
+
+</html>             
