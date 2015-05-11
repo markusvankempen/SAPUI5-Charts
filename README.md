@@ -1,7 +1,7 @@
 # SAPUI5-Charts
 Example of SAP UI5 Charts
 
-Supporting material for snd article for viz and makit and d3 charts.
+Supporting material for sdn post on sap ui5  viz and makit and d3 charts.
 
 Note: The example work only with CORS disabled if you use chrome use "--disable-web-security" option.
 Like: chrome.exe --disable-web-security.
@@ -13,7 +13,7 @@ Like: chrome.exe --disable-web-security.
 ### Author
 
 - markus van kempen (markus@vankempen.org) 
-- or at IBM mvk@ca.ibm.com
+- or via IBM at mvk@ca.ibm.com
 
 #### More information
 
