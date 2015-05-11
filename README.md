@@ -8,7 +8,7 @@ Like: chrome.exe --disable-web-security.
 
 ### SDN (SAP Dev Network blog/post)
 
--  snd: http://scn.sap.com/community/developer-center/front-end/blog/2014/08/29/displaying-json-in-ui5-dynamically
+-  SDN blog: http://scn.sap.com/community/fiori/blog/2015/05/11/sap-fiori-ui5-and-hana-data-visualization
 
 ### Author
 
